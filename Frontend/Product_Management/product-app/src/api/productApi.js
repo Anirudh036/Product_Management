@@ -14,10 +14,50 @@ export const fetchProducts = async (page = 1, pageSize = 10, search = "") => {
     throw new Error(response.data.errorMessage || "Failed to fetch products");
   }
 
-  return response.data.data; // 👈 return inner data
+  return response.data.data; 
 };
 
 export const createProduct = async (product) => {
-  const response = await axios.post(API_URL, product);
-  return response.data;
+  try {
+    const response = await axios.post(
+      `${BASE_URL}/Products/CreateProduct`,
+      product,
+      {
+        headers: {
+          "Content-Type": "application/json",
+        },
+        timeout: 10000,
+      }
+    );
+
+    if (response.data?.success === false) {
+      throw new Error(
+        response.data?.errorMessage || "Product creation failed"
+      );
+    }
+
+    return response.data;
+
+  } catch (error) {
+    if (!error.response) {
+      throw new Error("Server is not responding. Please try again later.");
+    }
+
+       const message =
+      error.response.data?.errorMessage ||
+      error.response.data?.message ||
+      "Something went wrong while creating product";
+
+    throw new Error(message);
+  }
+};
+
+export const fetchCategories = async () => {
+  const response = await axios.get(`${BASE_URL}/Products/GetAllCategories`);
+
+  if (!response.data.success) {
+    throw new Error("Failed to load categories");
+  }
+
+  return response.data.data;
 };

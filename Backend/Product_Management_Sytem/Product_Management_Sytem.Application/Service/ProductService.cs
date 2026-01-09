@@ -121,5 +121,19 @@ namespace Product_Management_Sytem.Application.Service
 
             return await _repository.DeleteProduct(product);
         }
+
+        public async Task<List<CategoriesViewModel>> GetAllCategories()
+        {
+            var categories = await _repository.GetAllCategories();
+
+            var result = categories.Select(c => new CategoriesViewModel
+            {
+                Id = c.Id,
+                CategoryName = c.Name
+            }).ToList();
+
+            return result;
+        }
+
     }
 }

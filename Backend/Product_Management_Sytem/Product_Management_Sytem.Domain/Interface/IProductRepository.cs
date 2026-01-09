@@ -14,5 +14,6 @@ namespace Product_Management_Sytem.Persistence.Interface
         Task<Product> AddProduct(Product product);
         Task<Product> UpdateProduct(Product product);
         Task<bool> DeleteProduct(Product product);
+        Task<List<Category>> GetAllCategories();
     }
 }

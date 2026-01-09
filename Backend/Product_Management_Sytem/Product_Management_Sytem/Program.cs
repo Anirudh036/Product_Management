@@ -22,9 +22,11 @@ namespace Product_Management_Sytem
                 options.UseSqlServer(connectionString));
             #endregion
 
+            #region Dependency 
             builder.Services.AddScoped<IProductRepository, ProductRepository>();
             builder.Services.AddScoped<IProductService, ProductService>();
 
+            #endregion
 
             builder.Services.AddControllers();
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
@@ -56,10 +58,7 @@ namespace Product_Management_Sytem
             }
 
             app.UseHttpsRedirection();
-
             app.UseAuthorization();
-
-
             app.MapControllers();
 
             app.Run();

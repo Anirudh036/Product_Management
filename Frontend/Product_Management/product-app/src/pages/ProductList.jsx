@@ -2,10 +2,12 @@ import { useEffect, useState } from "react";
 import { fetchProducts } from "../api/productApi";
 import Loader from "../components/Loader";
 import ProductCard from "../components/ProductCard";
+import { FaEdit, FaTrash } from "react-icons/fa";
 import Pagination from "../components/Pagination";
 import SearchBar from "../components/SearchBar";
+import "../css/Product.css";
 
-const PAGE_SIZE = 10;
+const PAGE_SIZE = 5;
 
 const ProductList = () => {
   const [products, setProducts] = useState([]);
@@ -35,17 +37,48 @@ const ProductList = () => {
     <div>
       <h2>Product List</h2>
 
-      <SearchBar value={search} onChange={setSearch} />
+      <SearchBar  value={search} onChange={setSearch} />
 
-      {loading ? (
-        <Loader />
-      ) : products.length === 0 ? (
-        <p>No products found</p>
-      ) : (
-        products.map((p) => (
-          <ProductCard key={p.id} product={p} />
-        ))
-      )}
+       <table className="tbl" border="1" cellPadding="10" cellSpacing="0" width="100%" >
+        <thead className="th">
+          <tr>
+            <th>Product Name</th>
+            <th>Description</th>
+            <th>Price (₹)</th>
+            <th></th>
+          </tr>
+        </thead>
+
+        <tbody>
+          {products.length === 0 ? (
+            <tr>
+              <td colSpan="3" align="center">
+                No products found
+              </td>
+            </tr>
+          ) : (
+            products.map((product) => (
+              <tr key={product.id}>
+                <td>{product.productName}</td>
+                <td>{product.description}</td>
+                <td>{product.price}</td>
+                <td style={{ textAlign: "center" }}>
+                  <FaEdit
+                    style={{ cursor: "pointer", marginRight: "12px", color: "black" }}
+                    title="Edit"
+                    onClick={() => handleEdit(product)}
+                  />
+                  <FaTrash
+                    style={{ cursor: "pointer", color: "black" }}
+                    title="Delete"
+                    onClick={() => handleDelete(product.id)}
+                  />
+                </td>
+              </tr>
+            ))
+          )}
+        </tbody>
+      </table>
 
       <Pagination
         currentPage={page}

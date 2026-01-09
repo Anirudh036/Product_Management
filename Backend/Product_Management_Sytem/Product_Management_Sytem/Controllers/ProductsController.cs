@@ -87,7 +87,7 @@ namespace Product_Management_Sytem.Controllers
         }
 
         [HttpPost]
-        public async Task<ApiResponseModel> CreateProduct(ProductCreateUpdateDto dto)
+        public async Task<ApiResponseModel> CreateProduct([FromBody]ProductCreateUpdateDto dto)
         {
             var resposne = new ApiResponseModel();
             try
@@ -184,6 +184,38 @@ namespace Product_Management_Sytem.Controllers
                 }
             }
             return resposne;
+        }
+
+        [HttpGet]
+        public async Task<ApiResponseModel> GetAllCategories()
+        {
+            var response = new ApiResponseModel();
+
+            try
+            {
+                var result = await _service.GetAllCategories();
+
+                if (result == null)
+                {
+                    response.ErrorMessage = "Categories list not found.";
+                    response.Success = false;
+                    response.Data = new List<CategoriesViewModel>();
+                }
+                else
+                {
+                    response.Message = "Get all categories successfully.";
+                    response.Success = true;
+                    response.Data = result;
+                }
+            }
+            catch (Exception ex)
+            {
+                response.ErrorMessage = ex.Message;
+                response.Success = false;
+                response.Data = new List<CategoriesViewModel>();
+            }
+
+            return response;
         }
     }
 }

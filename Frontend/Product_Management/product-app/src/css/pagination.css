@@ -1,0 +1,9 @@
+.pagination{
+    margin: 10px;
+    text-align: end;
+}
+.pgn-btn{
+    background-color: rgb(158, 155, 155);
+    color: black;
+    border-radius: 5px;
+}

@@ -1,4 +1,5 @@
 ﻿using Product_Management_Sytem.Application.ViewModel;
+using Product_Management_Sytem.Persistence.ApplicationDbContext;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,5 +15,6 @@ namespace Product_Management_Sytem.Application.Interface
         Task<ProductViewModel> CreateProduct(ProductCreateUpdateDto productViewModel);
         Task<ProductViewModel> UpdateProduct(int? id,ProductCreateUpdateDto productViewModel);
         Task<bool> DeleteProduct(int id);
+        Task<List<CategoriesViewModel>> GetAllCategories();
     }
 }

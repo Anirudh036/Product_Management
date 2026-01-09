@@ -1,16 +1,20 @@
+import "../css/pagination.css";
+
 const Pagination = ({ currentPage, totalPages, onPageChange }) => {
   return (
     <div className="pagination">
       <button
+        className="pgn-btn"
         disabled={currentPage === 1}
         onClick={() => onPageChange(currentPage - 1)}
       >
         Prev
       </button>
 
-      <span>Page {currentPage} of {totalPages}</span>
+      <span> Page {currentPage} of {totalPages} </span>
 
       <button
+        className="pgn-btn"
         disabled={currentPage === totalPages}
         onClick={() => onPageChange(currentPage + 1)}
       >

@@ -71,5 +71,11 @@ namespace Product_Management_Sytem.Persistence.Repository
             return product;
         }
 
+        public async Task<List<Category>> GetAllCategories()
+        {
+            var query = _dbContext.Categories.AsNoTracking().ToList();
+            return query;
+        }
+
     }
 }
