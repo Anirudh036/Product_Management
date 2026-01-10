@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { fetchProducts } from "../api/productApi";
 import Loader from "../components/Loader";
 import ProductCard from "../components/ProductCard";
+import { useNavigate } from "react-router-dom";
 import { FaEdit, FaTrash } from "react-icons/fa";
 import Pagination from "../components/Pagination";
 import SearchBar from "../components/SearchBar";
@@ -15,6 +16,7 @@ const ProductList = () => {
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
 
   useEffect(() => {
     loadProducts();
@@ -32,6 +34,9 @@ const ProductList = () => {
       setLoading(false);
     }
   };
+  const handleEdit = (id) => {
+  navigate(`/products/edit/${id}`);
+ };
 
   return (
     <div>
@@ -66,7 +71,7 @@ const ProductList = () => {
                   <FaEdit
                     style={{ cursor: "pointer", marginRight: "12px", color: "black" }}
                     title="Edit"
-                    onClick={() => handleEdit(product)}
+                    onClick={() => handleEdit(product.id)}
                   />
                   <FaTrash
                     style={{ cursor: "pointer", color: "black" }}

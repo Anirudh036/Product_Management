@@ -54,7 +54,7 @@ namespace Product_Management_Sytem.Controllers
 
 
         [HttpPost]
-        public async Task<ApiResponseModel> GetProductById(int id)
+        public async Task<ApiResponseModel> GetProductById([FromBody]int id)
         {
             var resposne = new ApiResponseModel();
             try
@@ -117,17 +117,15 @@ namespace Product_Management_Sytem.Controllers
                 }
             }
             return resposne;
-            
-            
         }
 
         [HttpPost]
-        public async Task<ApiResponseModel> UpdateProduct(int? id, ProductCreateUpdateDto dto)
+        public async Task<ApiResponseModel> UpdateProduct([FromBody] ProductCreateUpdateDto dto)
         {
             var resposne = new ApiResponseModel();
             try
             {
-                var result = await _service.UpdateProduct(id,dto); 
+                var result = await _service.UpdateProduct(dto.Id, dto); 
                 if (result == null)
                 {
                     resposne.ErrorMessage = "Product not found.";

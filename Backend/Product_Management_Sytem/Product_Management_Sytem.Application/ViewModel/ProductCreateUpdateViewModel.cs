@@ -9,6 +9,7 @@ namespace Product_Management_Sytem.Application.ViewModel
 {
     public class ProductCreateUpdateDto
     {
+        public int Id { get; set; }
         [Required]
         public string? Name { get; set; }
 

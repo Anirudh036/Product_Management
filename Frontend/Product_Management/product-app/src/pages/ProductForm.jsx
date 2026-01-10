@@ -1,10 +1,19 @@
 import { useState, useEffect } from "react";
-import { createProduct } from "../api/productApi";
+import { useParams, useNavigate } from "react-router-dom";
+import {
+  createProduct,
+  getProductById,
+  updateProduct,
+} from "../api/productApi";
 import { fetchCategories } from "../api/productApi";
 import Select from "react-select";
 import "../css/Product.css";
 
 const ProductForm = () => {
+  const { id } = useParams();
+  const navigate = useNavigate();
+  const isEdit = Boolean(id);
+
   const [form, setForm] = useState({
     name: "",
     description: "",
@@ -18,8 +27,27 @@ const ProductForm = () => {
   const [errors, setErrors] = useState({});
 
   useEffect(() => {
-    loadCategories();
-  }, []);
+    const init = async () => {
+      await loadCategories();
+      if (id) {
+        await loadProduct();
+      }
+    };
+
+    init();
+  }, [id]);
+
+ useEffect(() => {
+  if (!isEdit) return;
+  if (categories.length === 0) return;
+  if (selectedCategories.length > 0) return; // 👈 important
+
+  const preSelected = categories.filter(opt =>
+    form.categoryIds.includes(opt.value)
+  );
+
+  setSelectedCategories(preSelected);
+}, [categories, form.categoryIds, isEdit, selectedCategories.length]);
 
   const loadCategories = async () => {
     const data = await fetchCategories();
@@ -30,6 +58,21 @@ const ProductForm = () => {
     }));
 
     setCategories(options);
+    return options;
+  };
+
+  //Load product on edit icon click
+  const loadProduct = async () => {
+    const product = await getProductById(id);
+    const categoryIds = product.categories?.map((c) => c.id) || [];
+
+    setForm({
+      name: product.productName,
+      description: product.description,
+      price: product.price,
+      stock: product.stockQuantity,
+      categoryIds: categoryIds,
+    });
   };
 
   const validate = () => {
@@ -53,43 +96,48 @@ const ProductForm = () => {
   };
 
   const handleSubmit = async (e) => {
-  e.preventDefault();
+    e.preventDefault();
 
-  if (!validate()) return;
+    if (!validate()) return;
 
-  const payload = {
-    name: form.name,
-    description: form.description,
-    price: Number(form.price),
-    stock: Number(form.stock),
-    categoryIds: form.categoryIds, // ✅ correct
+    const payload = {
+      id: isEdit ? Number(id) : undefined,
+      name: form.name,
+      description: form.description,
+      price: Number(form.price),
+      stockQuantity: Number(form.stock),
+      categoryIds: form.categoryIds,
+    };
+
+    try {
+      if (isEdit) {
+        await updateProduct(payload);
+        alert("Product Updated Successfully!");
+      } else {
+        await createProduct(payload);
+        alert("Product Created Successfully!");
+      }
+
+      navigate("/");
+
+      setForm({
+        name: "",
+        description: "",
+        price: "",
+        stock: "",
+        categoryIds: [],
+      });
+
+      setSelectedCategories([]);
+    } catch (error) {
+      alert(error.message || "Failed to create product");
+    }
   };
-
-  try {
-    await createProduct(payload);
-    alert("Product Created Successfully!");
-
-    // ✅ PROPER RESET
-    setForm({
-      name: "",
-      description: "",
-      price: "",
-      stock: "",
-      categoryIds: [], // 👈 MUST
-    });
-
-    setSelectedCategories([]); // 👈 if using react-select
-
-  } catch (error) {
-    alert(error.message || "Failed to create product");
-  }
-};
-
 
   return (
     <div className="form-container">
       <form className="product-form" onSubmit={handleSubmit}>
-        <h2>Add Product</h2>
+        <h2>{isEdit ? "Edit Product" : "Add Product"}</h2>
 
         <div className="form-group">
           <label>Product Name</label>
@@ -151,7 +199,7 @@ const ProductForm = () => {
         </div>
 
         <button type="submit" className="submit-btn">
-          Submit
+          {isEdit ? "Update" : "Submit"}
         </button>
       </form>
     </div>
